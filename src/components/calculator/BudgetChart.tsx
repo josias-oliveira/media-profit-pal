@@ -55,8 +55,8 @@ export function BudgetChart({ data }: BudgetChartProps) {
       </ResponsiveContainer>
       
       {/* Center text */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="text-center">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ height: 280 }}>
+        <div className="text-center flex flex-col items-center justify-center">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">Total</p>
           <p className="text-lg font-bold font-mono text-foreground">
             R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
