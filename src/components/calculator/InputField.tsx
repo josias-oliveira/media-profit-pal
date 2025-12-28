@@ -68,7 +68,7 @@ export function InputField({
             type="text"
             value={formatValue(value)}
             onChange={handleInputChange}
-            className="w-24 h-8 text-right bg-muted/50 border-border/50 font-mono text-foreground focus:border-primary"
+            className={`h-8 text-right bg-muted/50 border-border/50 font-mono text-foreground focus:border-primary ${type === "currency" || type === "number" ? "w-32" : "w-24"}`}
           />
           {suffix && <span className="text-muted-foreground">{suffix}</span>}
         </div>
