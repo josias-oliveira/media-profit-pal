@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -30,24 +30,51 @@ export function InputField({
   type = "slider",
   className,
 }: InputFieldProps) {
+  const [inputValue, setInputValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+
   const formatValue = (val: number) => {
-    if (type === "currency") {
-      return val.toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-    }
     return val.toLocaleString("pt-BR", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
   };
 
+  // Sync external value to input when not focused
+  useEffect(() => {
+    if (!isFocused) {
+      setInputValue(formatValue(value));
+    }
+  }, [value, isFocused]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value.replace(/[^\d.,]/g, "").replace(",", ".");
+    setInputValue(e.target.value);
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    // Show raw number without formatting when focused
+    setInputValue(value.toString().replace(".", ","));
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    // Parse and apply the value
+    const rawValue = inputValue.replace(/[^\d.,]/g, "").replace(",", ".");
     const parsed = parseFloat(rawValue);
     if (!isNaN(parsed)) {
-      onChange(Math.min(Math.max(parsed, min), max));
+      const clampedValue = Math.min(Math.max(parsed, min), max);
+      onChange(clampedValue);
+      setInputValue(formatValue(clampedValue));
+    } else {
+      // Reset to current value if invalid
+      setInputValue(formatValue(value));
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.currentTarget.blur();
     }
   };
 
@@ -66,8 +93,11 @@ export function InputField({
           {prefix && <span className="text-muted-foreground">{prefix}</span>}
           <Input
             type="text"
-            value={formatValue(value)}
+            value={inputValue}
             onChange={handleInputChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
             className={`h-8 text-right bg-muted/50 border-border/50 font-mono text-foreground focus:border-primary ${type === "currency" || type === "number" ? "w-32" : "w-24"}`}
           />
           {suffix && <span className="text-muted-foreground">{suffix}</span>}
