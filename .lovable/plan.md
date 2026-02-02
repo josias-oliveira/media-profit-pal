@@ -1,111 +1,87 @@
 
 
-# BMS Theme Toggle Implementation Plan
+# BMS Theme Header Customization
 
 ## Overview
 
-Create a theme toggle that allows users to switch between the current dark "Fintech" theme and a new light "BMS" theme that matches the BMS visual identity shown in the reference image.
-
-## BMS Visual Identity Analysis
-
-Based on the screenshot, the BMS design includes:
-- **Light background**: White/light gray (#F5F7FA or similar)
-- **Primary blue accent**: #1976D2 (BMS brand blue)
-- **Clean borders**: Light gray borders (#E0E0E0)
-- **Minimal shadows**: Subtle or no shadows
-- **Simple professional look**: Less gradients, more solid colors
-- **Blue accent on active states**: Sidebar items, buttons
+Update the header to match the BMS visual identity when the BMS theme is enabled:
+1. Apply the dark navy blue background color (#0A1F44) to the header
+2. Replace the Calculator icon with the BMS cube logo
 
 ---
 
 ## Implementation Steps
 
-### 1. Add BMS Theme CSS Variables
+### 1. Copy BMS Logo to Project Assets
 
-Update `src/index.css` to add a new `.bms-theme` class with light mode colors:
+Copy the uploaded BMS cube logo to the project's assets folder:
+- Source: `user-uploads://e33a7d128086c386.png`
+- Destination: `src/assets/bms-logo.png`
 
-```text
-BMS Theme Colors:
-- Background: Light gray (#F5F7FA)
-- Card: White (#FFFFFF)
-- Primary: BMS Blue (#1976D2)
-- Text: Dark gray (#1A1A2E)
-- Borders: Light gray (#E0E0E0)
-- Muted: Gray tones for secondary text
+### 2. Add Header CSS Variables for BMS Theme
+
+Update `src/index.css` to add a specific header background color for BMS theme:
+
+```css
+.bms-theme {
+  /* Add header-specific variable */
+  --header-background: 220 65% 15%;  /* Dark navy blue #0A1F44 */
+  --header-foreground: 0 0% 100%;    /* White text for contrast */
+}
 ```
 
-### 2. Create Theme Toggle Component
+### 3. Update Header in Index.tsx
 
-Create a new component `src/components/calculator/ThemeToggle.tsx`:
+Modify the header section to:
+- Apply conditional background color when BMS theme is active
+- Import and display the BMS logo instead of Calculator icon when BMS theme is active
 
-- Switch component with label "BMS Theme"
-- Toggles between default dark theme and BMS light theme
-- Uses the existing Switch component from shadcn/ui
-- Positioned in the header next to other controls
-
-### 3. Update Index Page
-
-Modify `src/pages/Index.tsx`:
-
-- Add `isBmsTheme` state
-- Apply `bms-theme` class to root div when enabled
-- Pass theme state to components that need conditional styling
-
-### 4. Update Component Styles
-
-Some components may need conditional classes for proper contrast in light mode:
-
-- **MetricCard**: Adjust gradient overlays for light theme
-- **BudgetChart**: Ensure legend text is readable
-- **InputField**: Adjust input background colors
+```text
+Changes to header element:
+- Add conditional class: isBmsTheme ? 'bg-[#0A1F44]' : 'bg-background/80'
+- Import BMS logo: import bmsLogo from "@/assets/bms-logo.png"
+- Conditional icon rendering:
+  - BMS Theme: <img src={bmsLogo} /> 
+  - Default Theme: <Calculator icon />
+```
 
 ---
 
 ## Technical Details
 
-### CSS Variables for BMS Theme
+### Header Background Color
+The BMS header uses a dark navy blue: `#0A1F44` (approximately `hsl(220, 65%, 15%)`)
 
-```css
-.bms-theme {
-  --background: 210 20% 97%;      /* Light gray */
-  --foreground: 222 47% 11%;      /* Dark text */
-  --card: 0 0% 100%;              /* White cards */
-  --primary: 211 100% 46%;        /* BMS Blue #1976D2 */
-  --border: 220 13% 88%;          /* Light borders */
-  --muted: 220 14% 94%;           /* Light muted */
-  --muted-foreground: 220 9% 46%; /* Gray text */
-  /* ... more variables */
-}
-```
+### Logo Display
+- Logo dimensions: approximately 32x32 pixels to match the current icon size
+- Remove the gradient background wrapper when showing BMS logo (clean look)
+- Keep the gradient wrapper for the default dark theme with Calculator icon
 
-### Theme Toggle Component Structure
+### Files to Modify
 
-```text
-+-------------------------------------------+
-| [BMS Theme] [===O] Switch                 |
-+-------------------------------------------+
-```
-
-- Label shows "BMS Theme" or "Default Theme"
-- Toggle icon indicates current state
-- Smooth transition when switching themes
-
-### Files to Create/Modify
-
-| File | Action |
-|------|--------|
-| `src/index.css` | Add `.bms-theme` CSS variables |
-| `src/components/calculator/ThemeToggle.tsx` | New component |
-| `src/pages/Index.tsx` | Add theme state and toggle |
-| `src/components/calculator/MetricCard.tsx` | Conditional gradient classes |
+| File | Changes |
+|------|---------|
+| `src/assets/bms-logo.png` | Copy logo from upload |
+| `src/pages/Index.tsx` | Conditional header styling and logo |
+| `src/index.css` | Add header-specific CSS variables |
 
 ---
 
-## User Experience
+## Visual Result
 
-1. Toggle is placed in the header for easy access
-2. Theme change applies instantly with smooth transitions
-3. All text remains readable in both themes
-4. Charts and colors adapt appropriately
-5. BMS theme provides a clean, professional light appearance
+**Default Dark Theme:**
+```text
++--[gradient bg]--+
+|  Calculator     |  Programmatic Sales Estimator
+|     icon        |  Media Investment & Margin Calculator
++-----------------+
+```
+
+**BMS Theme:**
+```text
++--[dark navy blue background]------------------+
+|  [BMS cube logo]  Programmatic Sales Estimator
+|                   Media Investment & Margin Calculator
++-----------------------------------------------+
+```
 
