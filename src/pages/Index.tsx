@@ -74,14 +74,17 @@ export default function Index() {
     // Gross CPM in BRL
     const grossCpmBrl = (cpmBid * exchangeRate) + bidSync;
     
-    // Total impressions
-    const totalImpressions = availableMediaBudget > 0 && grossCpmBrl > 0 
-      ? (availableMediaBudget / grossCpmBrl) * 1000 
+    // Step 1: Calculate raw selling CPM (exact value)
+    const rawSellingCpm = availableMediaBudget > 0 && grossCpmBrl > 0
+      ? (totalBudget / ((availableMediaBudget / grossCpmBrl) * 1000)) * 1000
       : 0;
-    
-    // Selling CPM
-    const sellingCpm = totalImpressions > 0 
-      ? (totalBudget / totalImpressions) * 1000 
+
+    // Step 2: Round selling CPM to 2 decimal places
+    const sellingCpm = Math.round(rawSellingCpm * 100) / 100;
+
+    // Step 3: Recalculate impressions using rounded CPM
+    const totalImpressions = sellingCpm > 0
+      ? (totalBudget / sellingCpm) * 1000
       : 0;
     
     // Validation
