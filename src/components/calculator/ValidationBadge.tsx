@@ -52,7 +52,7 @@ export function ValidationBadge({ isValid, message, mathProof }: ValidationBadge
             "text-center font-bold text-lg",
             isValid ? "text-success" : "text-warning"
           )}>
-            PROVA MATEMÁTICA
+            MATHEMATICAL PROOF
           </DialogTitle>
         </DialogHeader>
         
@@ -67,14 +67,14 @@ export function ValidationBadge({ isValid, message, mathProof }: ValidationBadge
               </div>
               
               <div className="flex justify-between items-center px-4 py-3">
-                <span className="font-semibold text-foreground">CPM VENDAS</span>
+                <span className="font-semibold text-foreground">SELLING CPM</span>
                 <span className="font-mono text-foreground">
                   R$ {mathProof.rawSellingCpm.toFixed(6)}
                 </span>
               </div>
               
               <div className="flex justify-between items-center px-4 py-3">
-                <span className="font-semibold text-foreground">IMPRESSÕES</span>
+                <span className="font-semibold text-foreground">IMPRESSIONS</span>
                 <span className="font-mono text-foreground">
                   {mathProof.impressionsFromCpm.toLocaleString("pt-BR", { maximumFractionDigits: 0 })}
                 </span>
