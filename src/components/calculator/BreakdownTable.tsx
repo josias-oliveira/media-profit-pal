@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 interface BreakdownItem {
   label: string;
   percentage: number;
@@ -8,20 +10,33 @@ interface BreakdownItem {
 interface BreakdownTableProps {
   items: BreakdownItem[];
   total: number;
+  highlightedIndex?: number | null;
+  onHoverChange?: (index: number | null) => void;
 }
 
-export function BreakdownTable({ items, total }: BreakdownTableProps) {
+export function BreakdownTable({ items, total, highlightedIndex, onHoverChange }: BreakdownTableProps) {
   return (
     <div className="space-y-3">
       {items.map((item, index) => (
         <div 
           key={index} 
-          className="group flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+          className={cn(
+            "group flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all duration-200 cursor-pointer",
+            highlightedIndex === index && "bg-muted/60 ring-2 ring-primary/30 scale-[1.02]"
+          )}
+          style={{
+            opacity: highlightedIndex === null || highlightedIndex === undefined || highlightedIndex === index ? 1 : 0.5,
+          }}
+          onMouseEnter={() => onHoverChange?.(index)}
+          onMouseLeave={() => onHoverChange?.(null)}
         >
           <div className="flex items-center gap-3">
             <div 
-              className="w-2 h-8 rounded-full" 
-              style={{ backgroundColor: item.color }}
+              className="w-2 h-8 rounded-full transition-all duration-200" 
+              style={{ 
+                backgroundColor: item.color,
+                transform: highlightedIndex === index ? 'scaleY(1.1)' : 'scaleY(1)',
+              }}
             />
             <div>
               <p className="text-sm font-medium text-foreground">{item.label}</p>

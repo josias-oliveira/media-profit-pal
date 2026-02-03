@@ -6,9 +6,11 @@ interface BudgetChartProps {
     value: number;
     color: string;
   }[];
+  highlightedIndex?: number | null;
+  onHoverChange?: (index: number | null) => void;
 }
 
-export function BudgetChart({ data }: BudgetChartProps) {
+export function BudgetChart({ data, highlightedIndex, onHoverChange }: BudgetChartProps) {
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
   const CustomTooltip = ({ active, payload }: any) => {
@@ -41,12 +43,19 @@ export function BudgetChart({ data }: BudgetChartProps) {
             paddingAngle={3}
             dataKey="value"
             strokeWidth={0}
+            onMouseEnter={(_, index) => onHoverChange?.(index)}
+            onMouseLeave={() => onHoverChange?.(null)}
           >
             {data.map((entry, index) => (
               <Cell 
                 key={`cell-${index}`} 
                 fill={entry.color}
-                className="transition-all duration-300 hover:opacity-80"
+                className="transition-all duration-300 cursor-pointer"
+                style={{
+                  opacity: highlightedIndex === null || highlightedIndex === undefined || highlightedIndex === index ? 1 : 0.4,
+                  transform: highlightedIndex === index ? 'scale(1.05)' : 'scale(1)',
+                  transformOrigin: 'center',
+                }}
               />
             ))}
           </Pie>
@@ -67,7 +76,15 @@ export function BudgetChart({ data }: BudgetChartProps) {
       {/* Legend */}
       <div className="mt-4 grid grid-cols-2 gap-2">
         {data.map((item, index) => (
-          <div key={index} className="flex items-center gap-2">
+          <div 
+            key={index} 
+            className="flex items-center gap-2 cursor-pointer transition-opacity duration-200"
+            style={{
+              opacity: highlightedIndex === null || highlightedIndex === undefined || highlightedIndex === index ? 1 : 0.4,
+            }}
+            onMouseEnter={() => onHoverChange?.(index)}
+            onMouseLeave={() => onHoverChange?.(null)}
+          >
             <div 
               className="w-3 h-3 rounded-full flex-shrink-0" 
               style={{ backgroundColor: item.color }}
