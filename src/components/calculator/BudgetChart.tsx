@@ -50,7 +50,7 @@ export function BudgetChart({ data }: BudgetChartProps) {
               />
             ))}
           </Pie>
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip />} wrapperStyle={{ zIndex: 100 }} />
         </PieChart>
       </ResponsiveContainer>
       
