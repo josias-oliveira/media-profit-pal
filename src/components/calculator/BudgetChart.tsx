@@ -16,7 +16,7 @@ export function BudgetChart({ data }: BudgetChartProps) {
       const item = payload[0];
       const percentage = ((item.value / total) * 100).toFixed(1);
       return (
-        <div className="bg-popover border border-border rounded-lg p-3 shadow-lg">
+        <div className="bg-popover/100 backdrop-blur-none border border-border rounded-lg p-3 shadow-lg" style={{ backgroundColor: 'hsl(var(--popover))' }}>
           <p className="text-sm font-medium text-foreground">{item.name}</p>
           <p className="text-sm text-muted-foreground">
             R$ {item.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
