@@ -6,19 +6,21 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-interface BreakdownItem {
-  label: string;
-  percentage: number;
+interface MathProofData {
+  budget: number;
+  rawSellingCpm: number;
+  impressionsFromCpm: number;
+  impressionsFromMedia: number;
+  validator: number;
 }
 
 interface ValidationBadgeProps {
   isValid: boolean;
   message: string;
-  breakdown?: BreakdownItem[];
-  total?: number;
+  mathProof?: MathProofData;
 }
 
-export function ValidationBadge({ isValid, message, breakdown, total }: ValidationBadgeProps) {
+export function ValidationBadge({ isValid, message, mathProof }: ValidationBadgeProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -40,31 +42,60 @@ export function ValidationBadge({ isValid, message, breakdown, total }: Validati
       </TooltipTrigger>
       <TooltipContent 
         side="bottom" 
-        className="bg-popover border-border p-3 max-w-xs"
+        className="bg-popover border-border p-0 max-w-xs overflow-hidden"
       >
-        <div className="space-y-2">
-          <p className="text-xs font-semibold text-foreground mb-2">Budget Allocation Check</p>
-          {breakdown && breakdown.map((item, index) => (
-            <div key={index} className="flex justify-between text-xs gap-4">
-              <span className="text-muted-foreground">{item.label}</span>
-              <span className="font-mono text-foreground">{item.percentage.toFixed(2)}%</span>
+        {mathProof && (
+          <div className="w-full">
+            {/* Header */}
+            <div className="bg-success/20 text-success font-bold text-xs px-4 py-2 text-center border-b border-success/30">
+              PROVA MATEMÁTICA
             </div>
-          ))}
-          {total !== undefined && (
-            <>
-              <div className="border-t border-border my-2" />
-              <div className="flex justify-between text-xs font-semibold">
-                <span className="text-foreground">Total</span>
-                <span className={cn(
-                  "font-mono",
-                  Math.abs(total - 100) < 0.01 ? "text-success" : "text-warning"
-                )}>
-                  {total.toFixed(2)}%
+            
+            {/* Body */}
+            <div className="divide-y divide-border">
+              <div className="flex justify-between items-center px-4 py-2 text-xs">
+                <span className="font-semibold text-foreground">BUDGET</span>
+                <span className="font-mono text-foreground">
+                  R$ {mathProof.budget.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                 </span>
               </div>
-            </>
-          )}
-        </div>
+              
+              <div className="flex justify-between items-center px-4 py-2 text-xs">
+                <span className="font-semibold text-foreground">CPM VENDAS</span>
+                <span className="font-mono text-foreground">
+                  R$ {mathProof.rawSellingCpm.toFixed(6)}
+                </span>
+              </div>
+              
+              <div className="flex justify-between items-center px-4 py-2 text-xs">
+                <span className="font-semibold text-foreground">IMPRESSÕES</span>
+                <span className="font-mono text-foreground">
+                  {mathProof.impressionsFromCpm.toLocaleString("pt-BR", { maximumFractionDigits: 0 })}
+                </span>
+              </div>
+              
+              <div className="flex justify-between items-center px-4 py-2 text-xs">
+                <span className="font-semibold text-foreground">IMPRESSIONS (MEDIA)</span>
+                <span className="font-mono text-foreground">
+                  {mathProof.impressionsFromMedia.toLocaleString("pt-BR", { maximumFractionDigits: 0 })}
+                </span>
+              </div>
+              
+              <div className={cn(
+                "flex justify-between items-center px-4 py-2 text-xs",
+                Math.abs(mathProof.validator) < 1 ? "bg-success/10" : "bg-destructive/10"
+              )}>
+                <span className="font-bold text-foreground">VALIDATOR</span>
+                <span className={cn(
+                  "font-mono font-bold",
+                  Math.abs(mathProof.validator) < 1 ? "text-success" : "text-destructive"
+                )}>
+                  {Math.round(mathProof.validator).toLocaleString("pt-BR")}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </TooltipContent>
     </Tooltip>
   );
