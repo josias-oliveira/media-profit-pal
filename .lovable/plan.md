@@ -1,70 +1,40 @@
 
 
-# Modal for Mathematical Proof Display
+# Esconder Tema Dark e Definir BMS como Padrão
 
-## Overview
+## Resumo
 
-Transform the ValidationBadge component from a hover tooltip to a clickable element that opens a centered modal dialog with a dark overlay background displaying the mathematical proof data.
+Remover a opção de alternância de tema e manter apenas o tema BMS habilitado por padrão.
 
-## Current Behavior
+## Mudanças Necessárias
 
-- ValidationBadge uses a Tooltip component
-- Mathematical proof appears on hover
-- Small tooltip with limited space
+### 1. Arquivo: `src/pages/Index.tsx`
 
-## Proposed Behavior
+**Alteração no estado inicial (linha 52):**
+- Mudar `useState(false)` para `useState(true)` para que o tema BMS seja o padrão
 
-- Clicking the badge opens a Dialog (modal)
-- Dark overlay (black mask) covers the background
-- Mathematical proof data displayed centered on screen
-- Modal can be closed by clicking the X button or clicking outside
+**Remoção do ThemeToggle:**
+- Remover o componente `ThemeToggle` da navegação desktop (linha 208)
+- Remover o componente `ThemeToggle` do menu mobile (linhas 251-253)
+- Remover a linha separadora (`<div className="w-px h-6 bg-border" />`) que fica ao lado do toggle
 
-## Technical Implementation
+**Limpeza de imports:**
+- Remover o import do `ThemeToggle` se não for mais usado
 
-### File: `src/components/calculator/ValidationBadge.tsx`
+### 2. Arquivo: `src/components/calculator/ThemeToggle.tsx`
 
-**Changes required:**
+**Opção:** Manter o arquivo para uso futuro ou remover completamente
 
-1. Replace Tooltip import with Dialog components from `@/components/ui/dialog`
-2. Add `useState` hook to control modal open/close state
-3. Convert the badge to a clickable `DialogTrigger`
-4. Move the mathematical proof content into a `DialogContent` component
-5. Style the dialog with centered content and proper formatting
+## Resultado
 
-**New component structure:**
+| Antes | Depois |
+|-------|--------|
+| Toggle de tema visível | Toggle removido |
+| Tema Dark por padrão | Tema BMS por padrão |
+| Usuário pode alternar | Apenas tema BMS disponível |
 
-```text
-ValidationBadge
-├── Dialog (controlled by open state)
-│   ├── DialogTrigger (the badge itself)
-│   └── DialogContent
-│       ├── DialogHeader
-│       │   └── DialogTitle ("MATHEMATICAL PROOF")
-│       └── Content (budget, CPM, impressions, validator)
-```
+## Arquivos Afetados
 
-**Key styling:**
-
-- Use existing Dialog overlay (already has dark background `bg-black/80`)
-- Center content using Dialog's default positioning
-- Apply similar styling from current tooltip content
-- Add proper spacing and font sizing for modal view
-
-### Code Changes Summary
-
-| Component | Change |
-|-----------|--------|
-| Imports | Add Dialog components, add useState |
-| Badge element | Wrap with DialogTrigger |
-| Tooltip | Remove completely |
-| DialogContent | Add with centered mathematical proof table |
-
-## Visual Result
-
-- User clicks on "Math Check OK" badge
-- Dark overlay appears covering the entire screen
-- Centered white/card modal displays:
-  - Header: "MATHEMATICAL PROOF"
-  - Table with BUDGET, CPM VENDAS, IMPRESSOES, IMPRESSIONS (MEDIA), VALIDATOR
-  - Close button (X) in top-right corner
+- `src/pages/Index.tsx` - Remover ThemeToggle e alterar estado inicial
+- `src/components/calculator/ThemeToggle.tsx` - Pode ser mantido para uso futuro
 
