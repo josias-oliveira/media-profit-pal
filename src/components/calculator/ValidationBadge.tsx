@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface MathProofData {
   budget: number;
@@ -21,12 +24,14 @@ interface ValidationBadgeProps {
 }
 
 export function ValidationBadge({ isValid, message, mathProof }: ValidationBadgeProps) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
         <div 
           className={cn(
-            "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 cursor-help",
+            "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 cursor-pointer hover:scale-105",
             isValid 
               ? "bg-success/10 text-success border border-success/20" 
               : "bg-warning/10 text-warning border border-warning/20"
@@ -39,42 +44,43 @@ export function ValidationBadge({ isValid, message, mathProof }: ValidationBadge
           )}
           <span>{message}</span>
         </div>
-      </TooltipTrigger>
-      <TooltipContent 
-        side="bottom" 
-        className="bg-popover border-border p-0 max-w-xs overflow-hidden"
-      >
+      </DialogTrigger>
+      
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className={cn(
+            "text-center font-bold text-lg",
+            isValid ? "text-success" : "text-warning"
+          )}>
+            PROVA MATEMÁTICA
+          </DialogTitle>
+        </DialogHeader>
+        
         {mathProof && (
-          <div className="w-full">
-            {/* Header */}
-            <div className="bg-success/20 text-success font-bold text-xs px-4 py-2 text-center border-b border-success/30">
-              PROVA MATEMÁTICA
-            </div>
-            
-            {/* Body */}
+          <div className="w-full rounded-lg overflow-hidden border border-border">
             <div className="divide-y divide-border">
-              <div className="flex justify-between items-center px-4 py-2 text-xs">
+              <div className="flex justify-between items-center px-4 py-3">
                 <span className="font-semibold text-foreground">BUDGET</span>
                 <span className="font-mono text-foreground">
                   R$ {mathProof.budget.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                 </span>
               </div>
               
-              <div className="flex justify-between items-center px-4 py-2 text-xs">
+              <div className="flex justify-between items-center px-4 py-3">
                 <span className="font-semibold text-foreground">CPM VENDAS</span>
                 <span className="font-mono text-foreground">
                   R$ {mathProof.rawSellingCpm.toFixed(6)}
                 </span>
               </div>
               
-              <div className="flex justify-between items-center px-4 py-2 text-xs">
+              <div className="flex justify-between items-center px-4 py-3">
                 <span className="font-semibold text-foreground">IMPRESSÕES</span>
                 <span className="font-mono text-foreground">
                   {mathProof.impressionsFromCpm.toLocaleString("pt-BR", { maximumFractionDigits: 0 })}
                 </span>
               </div>
               
-              <div className="flex justify-between items-center px-4 py-2 text-xs">
+              <div className="flex justify-between items-center px-4 py-3">
                 <span className="font-semibold text-foreground">IMPRESSIONS (MEDIA)</span>
                 <span className="font-mono text-foreground">
                   {mathProof.impressionsFromMedia.toLocaleString("pt-BR", { maximumFractionDigits: 0 })}
@@ -82,7 +88,7 @@ export function ValidationBadge({ isValid, message, mathProof }: ValidationBadge
               </div>
               
               <div className={cn(
-                "flex justify-between items-center px-4 py-2 text-xs",
+                "flex justify-between items-center px-4 py-3",
                 Math.abs(mathProof.validator) < 1 ? "bg-success/10" : "bg-destructive/10"
               )}>
                 <span className="font-bold text-foreground">VALIDATOR</span>
@@ -96,7 +102,7 @@ export function ValidationBadge({ isValid, message, mathProof }: ValidationBadge
             </div>
           </div>
         )}
-      </TooltipContent>
-    </Tooltip>
+      </DialogContent>
+    </Dialog>
   );
 }
